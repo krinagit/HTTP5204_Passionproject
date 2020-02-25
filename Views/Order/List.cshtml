@@ -9,18 +9,24 @@
 <div class="navbar">
     <a class="navlink" href="/Order/New">Add New</a>
 </div>
+<form action="/Order/List" method="GET">
+   
+</form>
 <div class="tilecontainer">
-    @foreach (var order in @Model)
-    {
-        //convert to currency (string format)
-      
-        string Cost = String.Format("{0:C2}", ((decimal)order.OrderCost/ 100));
-    <div class="listitem">
-        <div>OrderItem:<a href="/Order/Show/@order.OrderID">@order.OrderItem</a></div>
-        <div>Date: @order.OrderDate</div>
-        <div>Quantity of Item: @order.OrderItemQty</div>
-        <div>Order Cost: @order.OrderCost</div>
-  
-    </div>
+    @{ foreach (var order in Model)
+        {
+            //convert to currency (string format)
+
+            string Cost = String.Format("{0:C2}", ((decimal)order.OrderCost / 100));
+        <div class="itemdetails">
+            <div class="listcat">OrderItem:<a href="/Order/Show/@order.OrderID">@order.OrderItem</a></div>
+            <div class="listcat">Date: @order.OrderDate</div>
+            <div class="listcat">Quantity of Item: @order.OrderItemQty</div>
+            <div class="listcat">Order Cost: @order.OrderCost</div>
+            <div class="listcat">Customer ID: @order.Customer.CustomerID</div>
+
+        </div>
+        }
     }
+    <div style="clear:both;"></div>
 </div>

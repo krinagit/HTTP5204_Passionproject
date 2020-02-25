@@ -13,14 +13,12 @@ using System.Diagnostics;
 using Passionproject2.Models.ViewModel;
 
 namespace Passionproject2.Controllers
-{
+{//reference:This code is done by reviewing christine's code 
     public class OrderController : Controller
     {
         // GET: Order
         private BakeryContext db = new BakeryContext();
-
-        public List<Customer> Customer { get; private set; }
-        public object Order { get; private set; }
+     
 
         // GET: Orders/List
         public ActionResult List()
@@ -28,15 +26,14 @@ namespace Passionproject2.Controllers
             //How could we modify this to include a search bar?
             List<Order> order = db.Orders.SqlQuery("Select * from Orders").ToList();
           
-            
             return View(order);
 
         }
 
         public ActionResult New()
         {
-            Debug.WriteLine("inserting into Orders");
-            //List<Customer> Customer = db.Customers.SqlQuery("Select * from Customers").ToList();
+           // Debug.WriteLine("inserting into Orders");
+            List<Customer> customer = db.Customers.SqlQuery("Select * from Customers").ToList();
 
             // Debug.WriteLine("hello");
             //foreach (var c in Customer)
@@ -45,8 +42,8 @@ namespace Passionproject2.Controllers
 
 
             //}
-            //return View(customer);
-            return View();
+            return View(customer);
+           // return View();
 
         }
 
@@ -58,7 +55,7 @@ namespace Passionproject2.Controllers
             //cost is represented in the system as an integer
             int Cost = (int)(OrderCost * 100);
 
-            string query = "insert into Orders (OrderItem, OrderDate, OrderItemQty,OrderCost,CustomerId) values (@OrderItem, @OrderDate, @OrderItemQty,@OrderCost,@CustomerID)";
+            string query = "insert into Orders (OrderItem, OrderDate, OrderItemQty,OrderCost,CustomerID) values (@OrderItem, @OrderDate, @OrderItemQty,@OrderCost,@CustomerID)";
 
             SqlParameter[] sqlparams = new SqlParameter[5];
             sqlparams[0] = new SqlParameter("@OrderItem", OrderItem);
@@ -74,7 +71,7 @@ namespace Passionproject2.Controllers
             return RedirectToAction("List");
         }
 
-        public ActionResult Show(int? id)
+        public ActionResult Show(int? id, int CustomerID)
         {
             if (id == null)
             {
@@ -91,8 +88,8 @@ namespace Passionproject2.Controllers
           
             //need information about the list of Orders associated with that customer
 
-           string query = "select * from orders inner join customers on Customers.CustomerID = Orders.CustomersID where CustomerID = @id";
-            SqlParameter param = new SqlParameter("@id", id);
+           string query = "select * from Orders inner join Customers on Customers.CustomerID = Orders.CustomerID where CustomerID = @CustomerID";
+            SqlParameter param = new SqlParameter("@CustomerID", CustomerID);
             List<Customer> Customers = db.Customers.SqlQuery(query, param).ToList();
 
             List<Customer> all_customers = db.Customers.SqlQuery("Select * from Customers").ToList();
@@ -113,16 +110,16 @@ namespace Passionproject2.Controllers
 
           List<Customer> Customers = db.Customers.SqlQuery("select * from Customers").ToList();
 
-            UpdateOrder updateOrder = new UpdateOrder();
-            updateOrder.Order = order;
-            updateOrder.Customers = Customers;
+            UpdateOrder updateOrderViewModel = new UpdateOrder();
+            updateOrderViewModel.Order = order;
+            updateOrderViewModel.Customers = Customers;
 
 
-          return View(updateOrder);
+          return View(updateOrderViewModel);
 
         }
         [HttpPost]
-        public ActionResult Update(int id, string OrderItem, DateTime OrderDate, int OrderItemQty, decimal OrderCost, int CustomerId)
+        public ActionResult Update(int id, string OrderItem, DateTime OrderDate, int OrderItemQty, decimal OrderCost, int CustomerID)
         {
 
 
@@ -139,10 +136,10 @@ namespace Passionproject2.Controllers
             sqlparams[2] = new SqlParameter("@OrderDate", OrderDate);
             sqlparams[3] = new SqlParameter("@OrderItemQty", OrderItemQty);
             sqlparams[4] = new SqlParameter("@OrderCost", OrderCost);
-          
+            sqlparams[5] = new SqlParameter("@CustomerID", CustomerID);
 
             db.Database.ExecuteSqlCommand(query, sqlparams);
-
+            //logic for updating the Order in the database goes here
             return RedirectToAction("List");
         }
 
@@ -166,6 +163,14 @@ namespace Passionproject2.Controllers
 
 
             return RedirectToAction("List");
+        }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }

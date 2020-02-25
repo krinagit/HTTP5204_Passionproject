@@ -12,7 +12,7 @@ using Passionproject2.Models;
 using System.Diagnostics;
 
 namespace Passionproject2.Controllers
-{
+{ //reference:This code is done by reviewing christine's code 
     public class CustomerController : Controller
     {
         // GET: Customer

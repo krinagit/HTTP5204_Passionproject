@@ -1,4 +1,4 @@
-﻿@model Passionproject2.Models.Customer
+﻿@model List<Passionproject2.Models.Customer>
 @{
     ViewBag.Title = "New";
 }
@@ -9,26 +9,28 @@
     <a class="navlink" href="/Order/List">Back to List</a>
 </div>
 <div>
-    <div class="col2">
+
         <form method="post" action="/Order/Add">
             <div class="inpfield"><span>Order Item:</span><input type="text" name="OrderItem" id="OrderItem" /></div>
             <div class="inpfield"><span>Order Date(mm/dd/yyyy):</span><input type="text" name="OrderDate" id="OrderDate" /></div>
             <div class="inpfield"><span>:</span>Ordered item Quentity<input type="text" name="OrderItemQty" id="OrderItemQty" /></div>
             <div class="inpfield"><span>Order Cost $:</span><input type="text" name="OrderCost" id="OrderCost" /></div>
+           
 
-          
-           <select id="CustomerID" type="text" name="CustomerID">
-             @{
-             //A rendering loop for presenting a list of customers
-          
-             foreach (var customer in Model)
-             {
-                 <option value="@customer.CustomerID">@customer.CustomerName</option>
+            <span>Customer Name:</span><select id="CustomerID" type="text" name="CustomerID">
+         @{
+         //A rendering loop for presenting a list of customers
 
-             }
-             }
-            </select>
-            <input type="submit" value="Add Order" />
+         foreach (var customer in Model)
+         {
+             <option value="@customer.CustomerID">@customer.CustomerName</option>
+
+         }
+         }
+        </select>
+            <div class="inpfield">
+                <input type="submit" value="Add Order" />
+            </div>
         </form>
     </div>
     <div class="col2last"></div>
